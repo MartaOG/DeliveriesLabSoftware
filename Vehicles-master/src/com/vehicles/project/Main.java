@@ -13,13 +13,14 @@ public class Main {
 	
 		if (x == 'C' || x == 'c') 
 			v = createCar(scn);
-		else //if (x == 'B' || x == 'b') 
+		else if (x == 'B' || x == 'b')
 			v = createBike(scn);
-		
-		List<Wheel> backWheels = askForWheels(scn, v, "Back wheels");
+		else 
+			v = createTricicle(scn);
 		
 		List<Wheel> frontWheels = askForWheels(scn, v, "Front wheels");	
 		
+		List<Wheel> backWheels = askForWheels(scn, v, "Back wheels");
 		
 		checkWheels(v, frontWheels, backWheels);
 		
@@ -35,7 +36,7 @@ public class Main {
 		return m;
 	}
 
-	public static Vehicle createVehicle (Scanner scn, char whichVehicle) {
+	public static Vehicle createVehicle (Scanner scn, char whichVehicle){
 		String p = plate(scn);
 		String b = input(scn, "Write the brand: ");
 		String c = input(scn, "Write the colou: ");
@@ -43,7 +44,7 @@ public class Main {
 		switch(whichVehicle) {
 		case 'C': return new Car(p, b, c);
 		case 'B': return new Bike(p, b, c);
-		default: return null;
+		default: return new Tricicle(p, b, c);
 		}
 	}
 	
@@ -53,6 +54,10 @@ public class Main {
 	
 	private static Bike createBike (Scanner scn) {
 		return (Bike)createVehicle(scn, 'B');
+	}
+	
+	private static Tricicle createTricicle (Scanner scn) {
+		return (Tricicle)createVehicle(scn, 'T');
 	}
 	
 	private static String input (Scanner scn, String a) {
@@ -99,11 +104,13 @@ public class Main {
 	}
 	
 	private static List<Wheel> addWheels (Scanner scn, Vehicle v) {
-		if (v instanceof Car) {
-			
+		if (v instanceof Car) 	
 			return addWheelsAtCar(scn);
-		}
-		else return addWheelAtBike(scn);
+		
+		else if (v instanceof Bike) 
+			return addWheelAtBike(scn);
+		
+		else return addWheelAtTricicle(scn);
 	}
 	
 	private static List<Wheel> addWheelsAtCar(Scanner scn) {
@@ -126,7 +133,11 @@ public class Main {
 		return oneWheel;
 	}
 	
-	private static Wheel createOneWheel (Scanner scn) {
+	private static List<Wheel> addWheelAtTricicle (Scanner scn) {
+		return null;
+	}
+	
+ 	private static Wheel createOneWheel (Scanner scn) {
 		System.out.print("Put the wheel diamter: ");
 		double dmt = scn.nextDouble();
 		try {
@@ -153,12 +164,15 @@ public class Main {
 				System.out.println("We are having errors with your wheels, please try it again.");
 			}			
 		}
-		else { //if (v instanceof Bike)
+		else if (v instanceof Bike) {
 			try {
 				((Bike)v).addTwoWheels(frontWheels, frontWheels);
 			} catch(Exception e) {
 				System.out.println("We are having errors with your wheels, please try it again.");
 			}
+		}
+		else {
+			
 		}
 	}
 	
