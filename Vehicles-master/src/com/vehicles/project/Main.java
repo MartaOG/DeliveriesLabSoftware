@@ -18,30 +18,37 @@ public class Main {
 		else 
 			v = createTricicle(scn);
 		
-		List<Wheel> frontWheels = askForWheels(scn, v, "Front wheels");	
-		
-		List<Wheel> backWheels = askForWheels(scn, v, "Back wheels");
+		List<Wheel> frontWheels = askForFrontWheels(scn, v, "Front wheels");	
+		List<Wheel> backWheels = askForBackWheels(scn, v, "Back wheels");
 		
 		checkWheels(v, frontWheels, backWheels);
 		
 		System.out.println("END");
 	}
 
+	private static String input (Scanner scn, String a) {
+		System.out.println(a);
+		return scn.next();
+	}
+	
 	private static char menu (Scanner scn) {
 		char m;	
-		System.out.println("What type of vehicle do you want to create? Bike(B)/Car(C)");
+		
+		System.out.println("What type of vehicle do you want to create?");
 		do {
+			System.out.println("Bike(B)/Car(C)/Tricicle(T)");
 			m = scn.next().charAt(0);
-		} while (m != 'C' && m != 'c' && m != 'b' && m != 'B');		
+		} while (m != 'C' && m != 'c' && m != 'b' && m != 'B' && m != 't' && m != 'T');	
+		
 		return m;
 	}
-
-	public static Vehicle createVehicle (Scanner scn, char whichVehicle){
+	
+	public static Vehicle createVehicle (Scanner scn, char type){
 		String p = plate(scn);
 		String b = input(scn, "Write the brand: ");
 		String c = input(scn, "Write the colou: ");
 					
-		switch(whichVehicle) {
+		switch(type) {
 		case 'C': return new Car(p, b, c);
 		case 'B': return new Bike(p, b, c);
 		default: return new Tricicle(p, b, c);
@@ -58,11 +65,6 @@ public class Main {
 	
 	private static Tricicle createTricicle (Scanner scn) {
 		return (Tricicle)createVehicle(scn, 'T');
-	}
-	
-	private static String input (Scanner scn, String a) {
-		System.out.println(a);
-		return scn.next();
 	}
 	
 	private static String plate (Scanner scn) {
@@ -98,43 +100,44 @@ public class Main {
 		return true;
 	}
 
-	private static List<Wheel> askForWheels (Scanner scn, Vehicle v, String s) {
+	private static List<Wheel> askForFrontWheels (Scanner scn, Vehicle v, String s) {
 		System.out.println(s);
-		return addWheels(scn, v);
-	}
-	
-	private static List<Wheel> addWheels (Scanner scn, Vehicle v) {
 		if (v instanceof Car) 	
-			return addWheelsAtCar(scn);
+			return addTwoWheels(scn);
 		
 		else if (v instanceof Bike) 
-			return addWheelAtBike(scn);
+			return addOneWheel(scn);
 		
-		else return addWheelAtTricicle(scn);
+		else return addOneWheel(scn);
 	}
 	
-	private static List<Wheel> addWheelsAtCar(Scanner scn) {
-		List<Wheel>twoWheels = new ArrayList<Wheel>();
+	private static List<Wheel> askForBackWheels (Scanner scn, Vehicle v, String s) {
+		System.out.println(s);
+		if (v instanceof Bike) 	
+			return addOneWheel(scn);
 		
-		Wheel left = createOneWheel(scn);
-		Wheel right = createOneWheel(scn);
-		twoWheels.add(left);
-		twoWheels.add(right);
+		else if (v instanceof Car) 
+			return addTwoWheels(scn);
 		
-		return twoWheels;
+		else return addTwoWheels(scn);
 	}
 	
-	private static List<Wheel> addWheelAtBike (Scanner scn) {
-		List<Wheel>oneWheel = new ArrayList<Wheel>();
-		
-		Wheel w = createOneWheel(scn);
-		oneWheel.add(w);
-		
-		return oneWheel;
+	private static List<Wheel> addTwoWheels(Scanner scn) {	
+		return addXWheels(scn, 2);
 	}
 	
-	private static List<Wheel> addWheelAtTricicle (Scanner scn) {
-		return null;
+	
+	private static List<Wheel> addOneWheel (Scanner scn) {
+		return addXWheels (scn, 1);
+	}
+	
+	private static List<Wheel> addXWheels (Scanner scn, int x) {
+		List<Wheel> toRet = new ArrayList<Wheel>();
+		while (x > 0) {
+			toRet.add(createOneWheel(scn));
+			x --;
+		}
+		return toRet;
 	}
 	
  	private static Wheel createOneWheel (Scanner scn) {

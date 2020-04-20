@@ -12,12 +12,6 @@ public class Bike extends Vehicle {
 		if (front.size() != 1 && back.size() != 1) {
 			throw new Exception();
 		}
-
-
-		if (!(front.get(0).equals(back.get(0)))) {
-			throw new Exception();
-		}
-
 		this.wheels.add(front.get(0));
 		this.wheels.add(back.get(0));
 	}
