@@ -7,32 +7,35 @@ public class Main {
 
 	public static void main(String[] args) {
 		Scanner scn = new Scanner(System.in);
+		Vehicle v;
 		
-		Car myCar = (Car)createVehicle(scn, 'C');
+		char x = menu(scn);
+	
+		if (x == 'C' || x == 'c') 
+			v = createCar(scn);
+		else //if (x == 'B' || x == 'b') 
+			v = createBike(scn);
 		
+		List<Wheel> backWheels = askForWheels(scn, v, "Back wheels");
 		
-		//3 Afegir rodes de darrere
-		List<Wheel> backWheels = new ArrayList<Wheel>();
-		List<Wheel> frontWheels = new ArrayList<Wheel>();
-
-		System.out.println("Back wheels");
-		backWheels = addWheels(scn);
-		
-		//4
-		System.out.println("Front wheels");
-		frontWheels = addWheels(scn);
+		List<Wheel> frontWheels = askForWheels(scn, v, "Front wheels");	
 		
 		
-		//3 i 4
-		try{
-			myCar.addWheels(frontWheels, backWheels);
-		}
-		catch(Exception e) {
-			System.out.println("We are having errors with your wheels, please try it again.");
-		}
+		checkWheels(v, frontWheels, backWheels);
+		
+		System.out.println("END");
 	}
 
-	public static Vehicle createVehicle(Scanner scn, char whichVehicle) {
+	private static char menu (Scanner scn) {
+		char m;	
+		System.out.println("What type of vehicle do you want to create? Bike(B)/Car(C)");
+		do {
+			m = scn.next().charAt(0);
+		} while (m != 'C' && m != 'c' && m != 'b' && m != 'B');		
+		return m;
+	}
+
+	public static Vehicle createVehicle (Scanner scn, char whichVehicle) {
 		String p = plate(scn);
 		String b = input(scn, "Write the brand: ");
 		String c = input(scn, "Write the colou: ");
@@ -42,6 +45,14 @@ public class Main {
 		case 'B': return new Bike(p, b, c);
 		default: return null;
 		}
+	}
+	
+	public static Car createCar (Scanner scn) {
+		return (Car)createVehicle(scn, 'C');
+	}
+	
+	private static Bike createBike (Scanner scn) {
+		return (Bike)createVehicle(scn, 'B');
 	}
 	
 	private static String input (Scanner scn, String a) {
@@ -82,35 +93,73 @@ public class Main {
 		return true;
 	}
 
-	private static List<Wheel> addWheels(Scanner scn) {
+	private static List<Wheel> askForWheels (Scanner scn, Vehicle v, String s) {
+		System.out.println(s);
+		return addWheels(scn, v);
+	}
+	
+	private static List<Wheel> addWheels (Scanner scn, Vehicle v) {
+		if (v instanceof Car) {
+			
+			return addWheelsAtCar(scn);
+		}
+		else return addWheelAtBike(scn);
+	}
+	
+	private static List<Wheel> addWheelsAtCar(Scanner scn) {
 		List<Wheel>twoWheels = new ArrayList<Wheel>();
 		
-		Wheel w = createOneWheel(scn);
-		twoWheels.add(w);
-		twoWheels.add(w);
+		Wheel left = createOneWheel(scn);
+		Wheel right = createOneWheel(scn);
+		twoWheels.add(left);
+		twoWheels.add(right);
 		
 		return twoWheels;
 	}
 	
+	private static List<Wheel> addWheelAtBike (Scanner scn) {
+		List<Wheel>oneWheel = new ArrayList<Wheel>();
+		
+		Wheel w = createOneWheel(scn);
+		oneWheel.add(w);
+		
+		return oneWheel;
+	}
+	
 	private static Wheel createOneWheel (Scanner scn) {
-		System.out.print("Write the wheel diamter: ");
+		System.out.print("Put the wheel diamter: ");
 		double dmt = scn.nextDouble();
-
 		try {
 			checkDiameter(dmt);
 		} catch (Exception e) {
 			System.out.println("Invalid diameter.");
 			System.exit(0);
 		}
-		System.out.print("Write the wheel brand: ");
 		
-		String brnd =  scn.next();
+		String brnd = input(scn, "Write the wheel brand: ");
 		
 		return new Wheel(brnd, dmt);
 	}
 	
-	public static void checkDiameter (double n) throws Exception {
+	private static void checkDiameter (double n) throws Exception {
 		if (n < 0.4 || n > 4.0) throw new Exception ();
 	}
-
+	
+	private static void checkWheels (Vehicle v, List<Wheel>frontWheels, List<Wheel>backWheels) {
+		if (v instanceof Car) {
+			try{
+				((Car)v).addWheels(frontWheels, backWheels);
+			} catch(Exception e) {
+				System.out.println("We are having errors with your wheels, please try it again.");
+			}			
+		}
+		else { //if (v instanceof Bike)
+			try {
+				((Bike)v).addTwoWheels(frontWheels, frontWheels);
+			} catch(Exception e) {
+				System.out.println("We are having errors with your wheels, please try it again.");
+			}
+		}
+	}
+	
 }

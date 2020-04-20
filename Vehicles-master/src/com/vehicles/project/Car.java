@@ -7,7 +7,7 @@ public class Car extends Vehicle {
 	public Car(String plate, String brand, String color) {
 		super(plate, brand, color);
 	}
-
+	
 	public void addWheels(List<Wheel> frontWheels, List<Wheel> backWheels) throws Exception {
 		addTwoWheels(frontWheels);
 		addTwoWheels(backWheels);
@@ -16,7 +16,6 @@ public class Car extends Vehicle {
 	public void addTwoWheels(List<Wheel> wheels) throws Exception {
 		if (wheels.size() != 2) {
 			throw new Exception();
-
 		}
 
 		Wheel rightWheel = wheels.get(0);
@@ -29,5 +28,4 @@ public class Car extends Vehicle {
 		this.wheels.add(leftWheel);
 		this.wheels.add(rightWheel);
 	}
-
 }
