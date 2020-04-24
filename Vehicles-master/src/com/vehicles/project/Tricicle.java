@@ -16,7 +16,6 @@ public class Tricicle extends Vehicle {
 		if (!(back.get(0).equals(back.get(1)))) {
 			throw new Exception();
 		}
-		
 		this.wheels.add(front.get(0));
 		this.wheels.add(back.get(0));
 		this.wheels.add(back.get(1));

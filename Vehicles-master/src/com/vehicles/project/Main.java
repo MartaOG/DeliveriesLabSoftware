@@ -160,23 +160,44 @@ public class Main {
 	}
 	
 	private static void checkWheels (Vehicle v, List<Wheel>frontWheels, List<Wheel>backWheels) {
-		if (v instanceof Car) {
-			try{
-				((Car)v).addWheels(frontWheels, backWheels);
-			} catch(Exception e) {
-				System.out.println("We are having errors with your wheels, please try it again.");
-			}			
+		if ((v instanceof Car) && !checkWheels((Car)v, frontWheels, backWheels)) {
+			System.exit(0);
 		}
-		else if (v instanceof Bike) {
-			try {
-				((Bike)v).addTwoWheels(frontWheels, frontWheels);
-			} catch(Exception e) {
-				System.out.println("We are having errors with your wheels, please try it again.");
-			}
+		else if ((v instanceof Bike) && !checkWheels((Bike)v, frontWheels, backWheels)){
+			System.exit(0);
 		}
-		else {
-			
+		else if ((v instanceof Tricicle) && !checkWheels((Tricicle)v, frontWheels, backWheels)){
+			System.exit(0);
 		}
 	}
 	
+	private static boolean checkWheels (Car c, List<Wheel>frontWheels, List<Wheel>backWheels) {
+		try{
+			c.addWheels(frontWheels, backWheels);
+		} catch(Exception e) {
+			System.out.println("We are having errors with your wheels, please try it again.");
+			return false;
+		}
+		return true;
+	}
+	
+	private static boolean checkWheels (Bike b, List<Wheel>frontWheels, List<Wheel>backWheels) {
+		try {
+			b.addTwoWheels(frontWheels, frontWheels);
+		} catch(Exception e) {
+			System.out.println("We are having errors with your wheels, please try it again.");
+			return false;
+		}
+		return true;
+	}
+	
+	private static boolean checkWheels (Tricicle t, List<Wheel>frontWheels, List<Wheel>backWheels) {
+		try {
+			t.addThreeWheels(frontWheels, backWheels);
+		} catch(Exception e) {
+			System.out.println("We are having errors with your wheels, please try it again.");
+			return false;
+		}
+		return true;	
+	}	
 }
