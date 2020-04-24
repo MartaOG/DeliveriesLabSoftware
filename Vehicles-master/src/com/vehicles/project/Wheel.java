@@ -1,5 +1,7 @@
 package com.vehicles.project;
 
+import java.util.List;
+
 public class Wheel {
 	private String brand;
 	private double diameter;
@@ -9,7 +11,14 @@ public class Wheel {
 		this.diameter = diameter;
 	}
 	
-	public boolean equals(Wheel e) {
-		return ((this.brand.compareTo(e.brand) == 0) && this.diameter == e.diameter);
+	public double getDiameter() { return this.diameter; }
+	public String getBrand() { return this.brand; }
+	
+	public boolean checkDiameter () {
+		return this.diameter >= 0.4 && this.diameter <= 4.0;
+	}
+	
+	public boolean equals (Wheel wheel) {
+		return this.diameter == wheel.diameter;
 	}
 }

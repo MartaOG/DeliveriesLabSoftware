@@ -5,119 +5,102 @@ import java.util.Scanner;
 
 public class Main {
 
+	static final int CAR = 1;
+	static final int BIKE = 2;
+	static final int TRICICLE = 3;
+	
 	public static void main(String[] args) {
 		Scanner scn = new Scanner(System.in);
-		Vehicle v;
+		Vehicle vehicle;
 		
-		char x = menu(scn);
+		int typeOfVehicle = askForTypeOfVehicle(scn); 
 	
-		if (x == 'C' || x == 'c') 
-			v = createCar(scn);
-		else if (x == 'B' || x == 'b')
-			v = createBike(scn);
-		else 
-			v = createTricicle(scn);
+		switch(typeOfVehicle) {
+		case CAR: vehicle = createCar(scn); break;
+		case BIKE: vehicle = createBike(scn); break;
+		case TRICICLE: vehicle = createTricicle(scn); break;
+		default: vehicle = null; break;
+		}
 		
-		List<Wheel> frontWheels = askForFrontWheels(scn, v, "Front wheels");	
-		List<Wheel> backWheels = askForBackWheels(scn, v, "Back wheels");
+		try {
+			Vehicle.checkPlate(vehicle.plate);
+		}
+		catch(Exception e) {
+			System.out.println("Invalid plate");
+		}
 		
-		checkWheels(v, frontWheels, backWheels);
+		System.out.println("Front wheels: ");
+		List<Wheel> frontWheels = askForFrontWheels(scn, vehicle);	
+		System.out.println("Back wheels: ");
+		List<Wheel> backWheels = askForBackWheels(scn, vehicle);
+		
+		checkWheels(vehicle, frontWheels, backWheels);
 		
 		System.out.println("END");
 	}
 
-	private static String input (Scanner scn, String a) {
-		System.out.println(a);
+	private static String input (Scanner scn, String sentences) {
+		System.out.println(sentences);
 		return scn.next();
 	}
 	
-	private static char menu (Scanner scn) {
-		char m;	
+	private static int inputInteger (Scanner scn, String sentences) {
+		System.out.println(sentences);
+		return scn.nextInt();
+	}
+	
+	private static int askForTypeOfVehicle (Scanner scn) {
+		int option = 0;
 		
 		System.out.println("What type of vehicle do you want to create?");
 		do {
-			System.out.println("Bike(B)/Car(C)/Tricicle(T)");
-			m = scn.next().charAt(0);
-		} while (m != 'C' && m != 'c' && m != 'b' && m != 'B' && m != 't' && m != 'T');	
+			option = inputInteger(scn, "Car(1)/Bike(2)/Tricicle(3)");
+		} while (option < 1 || option > 3);	
 		
-		return m;
+		return option;
 	}
 	
-	public static Vehicle createVehicle (Scanner scn, char type){
-		String p = plate(scn);
-		String b = input(scn, "Write the brand: ");
-		String c = input(scn, "Write the color: ");
+	public static Vehicle createVehicle (Scanner scn, int type){
+		String plate = plate(scn);
+		String brand = input(scn, "Write the brand: ");
+		String color = input(scn, "Write the color: ");
 					
 		switch(type) {
-		case 'C': return new Car(p, b, c);
-		case 'B': return new Bike(p, b, c);
-		default: return new Tricicle(p, b, c);
+		case CAR: return new Car(plate, brand, color);
+		case BIKE: return new Bike(plate, brand, color);
+		default: return new Tricicle(plate, brand, color);
 		}
 	}
 	
 	public static Car createCar (Scanner scn) {
-		return (Car)createVehicle(scn, 'C');
+		return (Car)createVehicle(scn, CAR);
 	}
 	
 	private static Bike createBike (Scanner scn) {
-		return (Bike)createVehicle(scn, 'B');
+		return (Bike)createVehicle(scn, BIKE);
 	}
 	
 	private static Tricicle createTricicle (Scanner scn) {
-		return (Tricicle)createVehicle(scn, 'T');
+		return (Tricicle)createVehicle(scn, TRICICLE);
 	}
 	
 	private static String plate (Scanner scn) {
-		String p = input(scn, "Write the plate: ");
+		String plate = input(scn, "Write the plate: ");
 		
-		p = p.toUpperCase();
-		try {
-			checkPlate(p);
-		}
-		catch(Exception e) {
-			System.out.println("Invalid plate");
-			System.exit(0);
-		}
-		return p;
-	}
-	
-	public static void checkPlate (String p) throws Exception {
-		if (p.length() != 7 || !isNumber(p.substring(0, 4)) || !correctLetters(p.substring(4, 7))) throw new Exception();	
-	}
-	
-	private static boolean isNumber (String p) {
-		try {
-			Integer.parseInt(p);
-			return true;
-		} catch (NumberFormatException nfe) { return false; }	
-	}
-	
-	private static boolean correctLetters (String p) {
-		for (int x = 0; x < p.length(); x ++ ) {
-			char y = p.charAt(x);
-			if (!((y >= 'A') && (y <= 'Z')) || y == ' ') return false;
-		}
-		return true;
+		return plate.toUpperCase();
 	}
 
-	private static List<Wheel> askForFrontWheels (Scanner scn, Vehicle v, String s) {
-		System.out.println(s);
-		if (v instanceof Car) 	
+	private static List<Wheel> askForFrontWheels (Scanner scn, Vehicle vehicle) {
+		if (vehicle instanceof Car) 
 			return addTwoWheels(scn);
-		
-		else if (v instanceof Bike) 
-			return addOneWheel(scn);
 		
 		else return addOneWheel(scn);
+
 	}
 	
-	private static List<Wheel> askForBackWheels (Scanner scn, Vehicle v, String s) {
-		System.out.println(s);
-		if (v instanceof Bike) 	
+	private static List<Wheel> askForBackWheels (Scanner scn, Vehicle vehicle) {
+		if (vehicle instanceof Bike) 	
 			return addOneWheel(scn);
-		
-		else if (v instanceof Car) 
-			return addTwoWheels(scn);
 		
 		else return addTwoWheels(scn);
 	}
@@ -131,49 +114,44 @@ public class Main {
 		return addXWheels (scn, 1);
 	}
 	
-	private static List<Wheel> addXWheels (Scanner scn, int x) {
-		List<Wheel> toRet = new ArrayList<Wheel>();
-		while (x > 0) {
-			toRet.add(createOneWheel(scn));
-			x --;
+	private static List<Wheel> addXWheels (Scanner scn, int numberOfWheels) {
+		List<Wheel> listOfWheels = new ArrayList<Wheel>();
+		while (numberOfWheels > 0) {
+			listOfWheels.add(createOneWheel(scn));
+			numberOfWheels --;
 		}
-		return toRet;
+		return listOfWheels;
 	}
-	
+
  	private static Wheel createOneWheel (Scanner scn) {
 		System.out.print("Put the wheel diamter: ");
-		double dmt = scn.nextDouble();
-		try {
-			checkDiameter(dmt);
-		} catch (Exception e) {
-			System.out.println("Invalid diameter.");
-			System.exit(0);
-		}
 		
-		String brnd = input(scn, "Write the wheel brand: ");
+		double wheelDiameter = scn.nextDouble();
 		
-		return new Wheel(brnd, dmt);
-	}
-	
-	private static void checkDiameter (double n) throws Exception {
-		if (n < 0.4 || n > 4.0) throw new Exception ();
-	}
-	
-	private static void checkWheels (Vehicle v, List<Wheel>frontWheels, List<Wheel>backWheels) {
-		if ((v instanceof Car) && !checkWheels((Car)v, frontWheels, backWheels)) {
+		String wheelBrand = input(scn, "Write the wheel brand: ");
+		Wheel wheel = new Wheel(wheelBrand, wheelDiameter);
+		
+		if (wheel.checkDiameter()) return wheel; 
+		
+		System.exit(0);
+		return null;
+ 	}
+
+	private static void checkWheels (Vehicle vehicle, List<Wheel>frontWheels, List<Wheel>backWheels) {
+		if ((vehicle instanceof Car) && !checkWheels((Car)vehicle, frontWheels, backWheels)) {
 			System.exit(0);
 		}
-		else if ((v instanceof Bike) && !checkWheels((Bike)v, frontWheels, backWheels)){
+		else if ((vehicle instanceof Bike) && !checkWheels((Bike)vehicle, frontWheels, backWheels)){
 			System.exit(0);
 		}
-		else if ((v instanceof Tricicle) && !checkWheels((Tricicle)v, frontWheels, backWheels)){
+		else if ((vehicle instanceof Tricicle) && !checkWheels((Tricicle)vehicle, frontWheels, backWheels)){
 			System.exit(0);
 		}
 	}
 	
-	private static boolean checkWheels (Car c, List<Wheel>frontWheels, List<Wheel>backWheels) {
+	private static boolean checkWheels (Car car, List<Wheel>frontWheels, List<Wheel>backWheels) {
 		try{
-			c.addWheels(frontWheels, backWheels);
+			car.addWheels(frontWheels, backWheels);
 		} catch(Exception e) {
 			System.out.println("We are having errors with your wheels.");
 			return false;
@@ -181,9 +159,9 @@ public class Main {
 		return true;
 	}
 	
-	private static boolean checkWheels (Bike b, List<Wheel>frontWheels, List<Wheel>backWheels) {
+	private static boolean checkWheels (Bike bike, List<Wheel>frontWheels, List<Wheel>backWheels) {
 		try {
-			b.addTwoWheels(frontWheels, frontWheels);
+			bike.addTwoWheels(frontWheels, frontWheels);
 		} catch(Exception e) {
 			System.out.println("We are having errors with your wheels.");
 			return false;
@@ -191,9 +169,9 @@ public class Main {
 		return true;
 	}
 	
-	private static boolean checkWheels (Tricicle t, List<Wheel>frontWheels, List<Wheel>backWheels) {
+	private static boolean checkWheels (Tricicle tricicle, List<Wheel>frontWheels, List<Wheel>backWheels) {
 		try {
-			t.addThreeWheels(frontWheels, backWheels);
+			tricicle.addThreeWheels(frontWheels, backWheels);
 		} catch(Exception e) {
 			System.out.println("We are having errors with your wheels.");
 			return false;
