@@ -46,7 +46,7 @@ public class Main {
 	public static Vehicle createVehicle (Scanner scn, char type){
 		String p = plate(scn);
 		String b = input(scn, "Write the brand: ");
-		String c = input(scn, "Write the colou: ");
+		String c = input(scn, "Write the color: ");
 					
 		switch(type) {
 		case 'C': return new Car(p, b, c);
