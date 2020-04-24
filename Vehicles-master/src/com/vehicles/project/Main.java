@@ -175,7 +175,7 @@ public class Main {
 		try{
 			c.addWheels(frontWheels, backWheels);
 		} catch(Exception e) {
-			System.out.println("We are having errors with your wheels, please try it again.");
+			System.out.println("We are having errors with your wheels.");
 			return false;
 		}
 		return true;
@@ -185,7 +185,7 @@ public class Main {
 		try {
 			b.addTwoWheels(frontWheels, frontWheels);
 		} catch(Exception e) {
-			System.out.println("We are having errors with your wheels, please try it again.");
+			System.out.println("We are having errors with your wheels.");
 			return false;
 		}
 		return true;
@@ -195,7 +195,7 @@ public class Main {
 		try {
 			t.addThreeWheels(frontWheels, backWheels);
 		} catch(Exception e) {
-			System.out.println("We are having errors with your wheels, please try it again.");
+			System.out.println("We are having errors with your wheels.");
 			return false;
 		}
 		return true;	
